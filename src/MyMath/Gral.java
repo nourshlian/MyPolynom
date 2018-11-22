@@ -15,40 +15,37 @@ import de.erichseifert.gral.ui.InteractivePanel;
  *
  */
 public class Gral extends JFrame {
-
+	
 	public Gral(Polynom_able p, double x0, double x1) {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(600, 400);
 
 		DataTable data = new DataTable(Double.class, Double.class);
+		DataTable kizon = new DataTable(Double.class, Double.class);
+
 			double eps = 0.01;
 		for (double x = x0; x <= x1; x+=eps) {
 			
 			double y = p.f(x);
 			
-			if(p.f(x-eps) < p.f(x) && p.f(x) > p.f(x+eps))
-				
+			if(p.f(x-eps) < p.f(x) && p.f(x) > p.f(x+eps)) {
+			kizon.add(x,y);	
 				System.out.println("("+x+","+(p.f(x))+") MAX");
-
-			if(p.f(x-eps) > p.f(x) && p.f(x) < p.f(x+eps))
-				
+			}
+			if(p.f(x-eps) > p.f(x) && p.f(x) < p.f(x+eps)) {
+				kizon.add(x,y);	
 				System.out.println("("+x+","+p.f(x)+") MIN");
-
+			}
 			data.add(x, y);	
 		}
 		
-		XYPlot plot = new XYPlot(data);
-		
-		getContentPane().add(new InteractivePanel(plot));
-		
-		LineRenderer lines = new DefaultLineRenderer2D();
-		
-		plot.setLineRenderers(data, lines);
-		
-		Color color = new Color(0.0f, 0.3f, 1.0f);
-		
-		plot.getPointRenderers(data).get(0).setColor(color);
-		
-		plot.getLineRenderers(data).get(0).setColor(color);
-	}
+		XYPlot plot = new XYPlot(data, kizon); // create new plot
+        getContentPane().add(new InteractivePanel(plot));
+        LineRenderer lines = new DefaultLineRenderer2D();
+        plot.setLineRenderers(data, lines); //add database to plot
+        Color color1 = new Color(0.0f, 0.3f,1.0f); // set color1 
+        Color color2 = new Color(255,0,0); // set color2
+        plot.getPointRenderers(data).get(0).setColor(color1); // color1 for polynom function 
+        plot.getPointRenderers(kizon).get(0).setColor(color2); // color2 for min max points
+        plot.getLineRenderers(data).get(0).setColor(color1);	}
 }
